@@ -4,6 +4,7 @@ from typing import Dict, TYPE_CHECKING, Any
 import numpy as np
 import pandas as pd
 import torch
+import logging
 from lightning.fabric import Fabric
 
 from abc import abstractmethod, ABC
@@ -14,6 +15,8 @@ if TYPE_CHECKING:
     from tracklab.callbacks import Callback
 
 from tracklab.datastruct import TrackerState
+
+log = logging.getLogger(__name__)
 
 
 def merge_dataframes(main_df, appended_piece):
@@ -174,6 +177,12 @@ class TrackingEngine(ABC):
                 metadatas=batch_metadatas,
                 **kwargs,
             )
+        log.info(f"{task}"
+                 f"\nbatch:{batch}"
+                 f"\ndetections:{detections}"
+                 f"\nimage_pred:{image_pred}"
+                 f"\nbatch_detections:{batch_detections}"
+                 f"\nbatch_metadatas:{batch_metadatas}")
         if isinstance(batch_detections, tuple):
             batch_detections, batch_metadatas = batch_detections
             image_pred = merge_dataframes(image_pred, batch_metadatas)

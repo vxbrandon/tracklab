@@ -13,6 +13,7 @@ class OfflineTrackingEngine(TrackingEngine):
                 model.reset()
 
         detections, image_pred = tracker_state.load()
+        log.info(f"tracker state\ndetections: {detections}\nimage_pred:{image_pred}")
         if len(self.module_names) == 0:
             return detections, image_pred
         image_filepaths = {idx: fn for idx, fn in image_pred["file_path"].items()}
@@ -32,4 +33,5 @@ class OfflineTrackingEngine(TrackingEngine):
             self.callback("on_module_end", task=model_name, detections=detections)
             if detections.empty:
                 return detections, image_pred
+            log.info(f"{model_name}\ndetections: {detections}\nimage_pred:{image_pred}")
         return detections, image_pred
